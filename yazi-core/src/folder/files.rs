@@ -149,6 +149,7 @@ impl Files {
 			let (hidden, items) = self.split_files(files);
 			self.hidden.extend(hidden);
 			self.items.extend(items);
+			return;
 		}
 
 		self.ticket = ticket;
