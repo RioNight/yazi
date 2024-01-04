@@ -72,6 +72,15 @@ impl Tab {
 		self.history.remove(url).unwrap_or_else(|| Folder::from(url))
 	}
 
+	#[inline]
+	pub fn grid_hovered(&self) -> [Option<&File>; 3] {
+		[
+			self.parent.as_ref().and_then(|f| f.hovered()),
+			self.current.hovered(),
+			self.current.hovered().and_then(|h| self.history.get(&h.url)).and_then(|f| f.hovered()),
+		]
+	}
+
 	pub fn apply_files_attrs(&mut self) {
 		let apply = |f: &mut Folder| {
 			let hovered = f.hovered().map(|h| h.url());
@@ -82,15 +91,15 @@ impl Tab {
 			render!(f.repos(hovered));
 		};
 
-		if let Some(f) =
-			self.current.hovered().filter(|h| h.is_dir()).and_then(|h| self.history.get_mut(&h.url))
-		{
-			apply(f);
-		}
-
 		apply(&mut self.current);
-		if let Some(parent) = self.parent.as_mut() {
-			apply(parent);
-		}
+
+		self
+			.current
+			.hovered()
+			.filter(|h| h.is_dir())
+			.and_then(|h| self.history.get_mut(&h.url))
+			.map(apply);
+
+		self.parent.as_mut().map(apply);
 	}
 }

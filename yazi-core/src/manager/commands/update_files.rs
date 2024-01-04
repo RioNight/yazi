@@ -1,3 +1,4 @@
+use tracing::debug;
 use yazi_shared::{event::Exec, fs::FilesOp, render};
 
 use crate::{folder::Folder, manager::Manager, tasks::Tasks};
@@ -72,6 +73,11 @@ impl Manager {
 			ops.push(ops[0].chroot(u));
 		}
 
+		// let hovered: Vec<_> =
+		// 	self.active().grid_hovered().into_iter().map(|f| f.map(|f|
+		// f.url())).collect();
+
+		debug!("update_files: {:?}", ops);
 		for op in ops {
 			let url = op.url();
 			if self.cwd() == url {
@@ -85,6 +91,13 @@ impl Manager {
 			}
 		}
 
-		self.active_mut().apply_files_attrs();
+		// if hovered[1].is_none() {
+		// 	self.current_mut().cursor = 0;
+		// }
+
+		// self.current_mut().repos(hovered[1].as_ref());
+		// self.active_mut().apply_files_attrs();
+
+		// hovered.into_iter().for_each(|h| self.hover(h));
 	}
 }
